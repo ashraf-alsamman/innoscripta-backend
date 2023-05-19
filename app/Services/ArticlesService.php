@@ -43,7 +43,9 @@ class ArticlesService
 
         if (count($statuses['success']) === 0) {
             $this->logsRepository->saveLogs("Artical", "All Providers failed", $statuses);
-            throw new \Exception('All Providers failed.');
+            $arrayString = print_r($statuses, true);
+
+            throw new \Exception('All Providers failed.' . $arrayString);
         }
         return $statuses;
     }

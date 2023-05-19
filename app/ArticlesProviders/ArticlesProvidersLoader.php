@@ -1,6 +1,7 @@
 <?php
 
 namespace App\ArticlesProviders;
+
 use App\ArticlesProviders\Providers\NewsAPI;
 use App\ArticlesProviders\Providers\NewsCatcherApi;
 use App\ArticlesProviders\Providers\NewYorkTimes;
@@ -8,7 +9,7 @@ use App\Http\HttpClient;
 
 class ArticlesProvidersLoader
 {
-    public function __construct(  private HttpClient $httpClient )
+    public function __construct(private HttpClient $httpClient)
     {
     }
 
@@ -20,8 +21,8 @@ class ArticlesProvidersLoader
     {
         return [
             new NewsAPI($this->httpClient),
-            // new NewsCatcherApi($this->httpClient),
-            // new NewYorkTimes($this->httpClient ),
+            new NewsCatcherApi($this->httpClient),
+            new NewYorkTimes($this->httpClient),
         ];
     }
 }

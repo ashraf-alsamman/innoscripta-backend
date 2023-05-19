@@ -13,16 +13,17 @@ return new class extends Migration
     {
         Schema::create('articles', function (Blueprint $table) {
             $table->id();
+            $table->string('unique_hash')->unique();
             $table->string('provider');
-            $table->string('title')->unique();
+            $table->text('title');
             $table->text('content');
             $table->string('source')->nullable();
             $table->string('author')->nullable();
             $table->string('category')->nullable();
             $table->text('description')->nullable();
             $table->text('url')->nullable();
-            $table->string('urlToImage')->nullable();
-            $table->string('published_at')->nullable();
+            $table->text('urlToImage')->nullable();
+            $table->date('published_at')->nullable();
             $table->timestamps();
         });
     }

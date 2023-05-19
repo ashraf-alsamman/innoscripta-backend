@@ -15,31 +15,41 @@ class NewsAPI implements ArticlesProviderInterface
 
     public function getArticles()
     {
-        $apiKey = 'e808980ef96b4c0da93980b9980c3bab';
-        $url =  'https://newsapi.org/v2/everything?q=tesla&sortBy=publishedAt&apiKey=';
+        $url =  config('Articles.NewsAPI.URL');
+        $apiKey = config('Articles.NewsAPI.KEY');
         $data = $this->httpClient->get($url, $apiKey);
 
         return $this->transformArticles($data['articles']);
     }
 
-
-
-    private function transformArticles(array $articles)
+    private function unique_hash($title, $published_at): string
     {
-        return array_map(function ($article) {
-            return new ArticleDTO(
-                 "NewsAPI",
-                   $article['source']['name'],
-                  $article['title'] ?? 'No title provided',
-                  "no title",
-                  $article['description'],
-                  $article['url'],
-              $article['publishedAt'],
-                  $article['byline']['original'] ?? null,
-                  $article['content'] ?? null
-            );
-        }, $articles);
+        $titleSnippet = substr($title, 0, 10);
+        $published_atSnippet = substr($published_at, 0, 8);
+        return md5($titleSnippet . $published_atSnippet);
     }
 
+    private function formattedDateTime($dateString): string
+    {
+        $carbon = \Carbon\Carbon::parse($dateString);
+        return $carbon->format('Y-m-d H:i:s');;
+    }
 
+    private function transformArticles($articles)
+    {
+        return array_map(function ($article) {
+            return (new ArticleDTO(
+                unique_hash: $this->unique_hash($article['title'], $article['publishedAt']),
+                provider: "NewsAPI",
+                title: $article['title'] ?? 'No title provided',
+                content: $article['content'] ?? 'no content exist ',
+                source: $article['source']['name'],
+                description: $article['description'],
+                url: $article['url']?? 'no url exist',
+                category: "no category",
+                published_at: $this->formattedDateTime($article['publishedAt']) ,
+                author: $article['byline']['original'] ?? 'no data exist',
+            ))->toArray();
+        }, $articles);
+    }
 }
