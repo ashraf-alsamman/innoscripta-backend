@@ -2,15 +2,15 @@
 
 namespace App\ArticlesProviders\Providers;
 
-use App\Http\HttpClient;
 use App\ArticlesProviders\Providers\ArticlesProviderInterface;
+use App\Http\HttpClient;
 use App\DTO\ArticleDTO;
 
 /**
- * Class NewYorkTimes
+ * Class NewsAPI
  * @package App\ArticlesProviders\Providers
  */
-class NewYorkTimes implements ArticlesProviderInterface
+class Mediastack implements ArticlesProviderInterface
 {
     /**
      * @param HttpClient $httpClient
@@ -26,10 +26,10 @@ class NewYorkTimes implements ArticlesProviderInterface
      */
     public function getArticles(): array
     {
-        $url = config('Articles.NewYorkTimes.URL');
-        $apiKey = config('Articles.NewYorkTimes.KEY');
+        $url = config('Articles.Mediastack.URL');
+        $apiKey = config('Articles.Mediastack.KEY');
         $data = $this->httpClient->get($url, $apiKey);
-        return $this->transformArticles($data['response']['docs']);
+        return $this->transformArticles($data['data']);
     }
 
     /**
@@ -68,16 +68,16 @@ class NewYorkTimes implements ArticlesProviderInterface
     {
         return array_map(function ($article) {
             return (new ArticleDTO(
-                unique_hash: $this->unique_hash($article['snippet'], $article['pub_date']),
-                provider: "NewYorkTimes",
-                title: $article['snippet'] ?? 'No title provided',
-                content: $article['lead_paragraph'] ?? 'no content exist',
+                unique_hash: $this->unique_hash($article['title'], $article['published_at']),
+                provider: "Mediastack",
+                title: $article['title'] ?? 'No title provided',
+                content: $article['description'] ?? 'no content exist ',
                 source: $article['source'],
-                category: $article['section_name'] ?? 'No category provided',
-                description: $article['snippet'],
-                url: $article['web_url'] ?? 'no url exist',
-                published_at: $this->formattedDateTime($article['pub_date']),
-                author: $article['byline']['original'] ?? 'no author exist',
+                description: $article['description'],
+                url: $article['url'] ?? 'no url exist',
+                category: $article['category'],
+                published_at: $this->formattedDateTime($article['published_at']),
+                author: $article['author'] ?? 'no author exist',
             ))->toArray();
         }, $articles);
     }

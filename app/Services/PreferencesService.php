@@ -2,27 +2,30 @@
 
 namespace App\Services;
 
-use App\Models\Article;
-use Illuminate\Http\Request;
 use App\Repositories\ArticlesRepository;
 use App\Repositories\PreferencesRepository;
-use App\Models\Preference;
-use Illuminate\Http\JsonResponse;
 use App\Models\User;
-use App\Models\Category;
-use App\Models\Author;
-use App\Models\Source;
-use Illuminate\Support\Facades\Auth;
+
 class PreferencesService
 {
-
+    /**
+     * PreferencesService constructor.
+     *
+     * @param ArticlesRepository $articlesRepository
+     * @param PreferencesRepository $preferencesRepository
+     */
     public function __construct(
         private readonly ArticlesRepository $articlesRepository,
         private readonly PreferencesRepository $preferencesRepository,
     ) {
     }
 
-    public function getAllPreferences()
+    /**
+     * Get all preferences.
+     *
+     * @return array
+     */
+    public function getAllPreferences(): array
     {
         $sources = $this->preferencesRepository->getAllSources();
         $categories = $this->preferencesRepository->getAllCategories();
@@ -35,12 +38,25 @@ class PreferencesService
         ];
     }
 
-    public function saveUserPreferences(User $user, array $preferences)
+    /**
+     * Save user preferences.
+     *
+     * @param User $user
+     * @param array $preferences
+     * @return void
+     */
+    public function saveUserPreferences(User $user, array $preferences): void
     {
-        return $this->preferencesRepository->saveUserPreferences($user, $preferences);
+        $this->preferencesRepository->saveUserPreferences($user, $preferences);
     }
 
-    public function getPreferences(User $user)
+    /**
+     * Get user preferences.
+     *
+     * @param User $user
+     * @return array
+     */
+    public function getPreferences(User $user): array
     {
         return $this->preferencesRepository->getUserPreferences($user);
     }

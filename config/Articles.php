@@ -7,9 +7,9 @@ return [
         'KEY' => env('NewsAP_KEY', 'e808980ef96b4c0da93980b9980c3bab'),
     ],
 
-    'NewsCatcherApi' => [
-        'URL' => env('NewsCatcherApi_URL', 'https://api.newscatcherapi.com/v2/latest_headlines?countries=US'),
-        'KEY' => env('NewsCatcherApi_KEY', 'cd_u19izl2VHL1e4Gk7t2LsFH5v5DaLuPrPbiFLYbCY'),
+    'Mediastack' => [
+        'URL' => env('Mediastack_URL', 'api.mediastack.com/v1/news?limit=40&access_key='),
+        'KEY' => env('Mediastack_KEY', '8ec91a496cc7be440c0cdb601b634f83'),
     ],
 
     'NewYorkTimes' => [
@@ -18,3 +18,4 @@ return [
     ],
 
 ];
+

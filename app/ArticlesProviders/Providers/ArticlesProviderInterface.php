@@ -2,7 +2,16 @@
 
 namespace App\ArticlesProviders\Providers;
 
+/**
+ * Interface ArticlesProviderInterface
+ * @package App\ArticlesProviders\Providers
+ */
 interface ArticlesProviderInterface
 {
-    public function getArticles() ;
+    /**
+     * Get articles from the provider.
+     *
+     * @return array
+     */
+    public function getArticles(): array;
 }

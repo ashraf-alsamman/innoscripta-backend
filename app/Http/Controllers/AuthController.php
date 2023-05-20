@@ -5,10 +5,12 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use App\Models\User;
+use Illuminate\Http\JsonResponse;
 
 class AuthController extends Controller
 {
-    public function register(Request $request)
+    public function register(Request $request):JsonResponse
+
     {
 
         try {
@@ -29,7 +31,7 @@ class AuthController extends Controller
         }
     }
 
-    public function login(Request $request)
+    public function login(Request $request):JsonResponse
     {
         $validatedData = $request->validate([
             'email' => 'required|string|email',
@@ -46,9 +48,9 @@ class AuthController extends Controller
             if (!Hash::check($validatedData['password'], $user->password)) {
                 return response()->json(['error' => 'The provided credentials are incorrect.'], 500);
             }
+            return response()->json(['status' => true ,'token' => $user->createToken($request->email)->plainTextToken], 200);
 
-            return $user->createToken($request->email)->plainTextToken;
-        } catch (\Exception $e) {
+         } catch (\Exception $e) {
 
             return response()->json(['error' => $e->getMessage()], 500);
         }

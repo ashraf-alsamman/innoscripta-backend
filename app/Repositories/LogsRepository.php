@@ -1,11 +1,20 @@
 <?php
 
 namespace App\Repositories;
+
 use App\Models\Logs;
 
 class LogsRepository
 {
-
+    /**
+     * Save logs to the database.
+     *
+     * @param string $model
+     * @param string $title
+     * @param mixed $message
+     * @return void
+     * @throws \Exception
+     */
     public function saveLogs(string $model, string $title, $message)
     {
         try {
@@ -17,9 +26,7 @@ class LogsRepository
             $data->message = $limitedData;
             $data->save();
         } catch (\Exception $e) {
-            // Return an error response
-            throw new \Exception($e->getMessage()); // Throw an exception if all classes failed
-            return response()->json(['error' => 'Error saving logs.'], 500);
+            throw new \Exception($e->getMessage()); // Throw an exception if saving logs fails
         }
     }
 }

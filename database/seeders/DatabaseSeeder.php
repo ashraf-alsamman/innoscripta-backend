@@ -32,10 +32,10 @@ class DatabaseSeeder extends Seeder
 
 
         $sources = [
-            ['name' => 'Source 1'],
-            ['name' => 'Source 2'],
-            ['name' => 'Source 3'],
-            ['name' => 'Source 4'],
+            ['name' => 'Barron'],
+            ['name' => 'TweakTown'],
+            ['name' => 'Business Insider'],
+            ['name' => 'Pikabu.ru'],
         ];
 
         foreach ($sources as $source) {
@@ -44,7 +44,7 @@ class DatabaseSeeder extends Seeder
 
 
         $categories = [
-            ['name' => 'Category 1'],
+            ['name' => 'sports'],
             ['name' => 'Category 2'],
             ['name' => 'Category 3'],
             ['name' => 'Category 4'],

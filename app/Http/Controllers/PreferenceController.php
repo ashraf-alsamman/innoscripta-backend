@@ -1,19 +1,34 @@
 <?php
 
 namespace App\Http\Controllers;
+
 use Illuminate\Http\Request;
 use App\Services\PreferencesService;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Http\JsonResponse;
 
+/**
+ * Class PreferenceController
+ * @package App\Http\Controllers
+ */
 class PreferenceController extends Controller
 {
-
+    /**
+     * PreferenceController constructor.
+     *
+     * @param PreferencesService $preferencesService
+     */
     public function __construct(
         private PreferencesService $preferencesService,
     ) {
     }
 
-    public function getUserPreference()
+    /**
+     * Get preferences for the authenticated user.
+     *
+     * @return JsonResponse
+     */
+    public function getUserPreference(): JsonResponse
     {
         try {
             $user = Auth::user();
@@ -21,12 +36,19 @@ class PreferenceController extends Controller
             return response()->json(['data' => $data, 'status' => true], 200);
         } catch (\Exception $e) {
             return response()->json([
-                'status' => false, 'message' => 'User Preferences failed', 'error' => $e->getMessage(),
-            ], 500);
+                'status' => false,
+                'message' => 'Failed to retrieve user preferences',
+                'error' => $e->getMessage(),
+            ], 422);
         }
     }
 
-    public function getAllPreferences()
+    /**
+     * Get all preferences.
+     *
+     * @return JsonResponse
+     */
+    public function getAllPreferences(): JsonResponse
     {
         try {
             $preferences = $this->preferencesService->getAllPreferences();
@@ -36,8 +58,13 @@ class PreferenceController extends Controller
         }
     }
 
-
-    public function saveUserPreference(Request $request)
+    /**
+     * Save user preferences.
+     *
+     * @param Request $request
+     * @return JsonResponse
+     */
+    public function saveUserPreference(Request $request): JsonResponse
     {
         try {
             $request->validate([
@@ -47,12 +74,12 @@ class PreferenceController extends Controller
             ]);
 
             $preferences = $request->only(['categories', 'sources', 'authors']);
-            $user= Auth::user();
-            $this->preferencesService->saveUserPreferences($user ,$preferences);
+            $user = Auth::user();
+            $this->preferencesService->saveUserPreferences($user, $preferences);
 
             return response()->json(['message' => 'Preferences saved successfully', 'status' => true], 200);
         } catch (\Exception $e) {
-            return response()->json(['error' => $e->getMessage(),'message' => 'User Preferences failed to save',], 500);
+            return response()->json(['error' => $e->getMessage(), 'message' => 'Failed to save user preferences'], 422);
         }
     }
 }

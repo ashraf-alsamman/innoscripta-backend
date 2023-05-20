@@ -7,22 +7,20 @@ use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
-use App\Services\NewsService;
+use App\Services\ArticlesService;
 
 class FetchNewsJob implements ShouldQueue
 {
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
 
-    protected $newsService;
 
     /**
      * Create a new job instance.
      *
      * @return void
      */
-    public function __construct(NewsService $newsService)
+    public function __construct(private ArticlesService $articlesService)
     {
-        $this->newsService = $newsService;
     }
 
     /**
@@ -32,10 +30,6 @@ class FetchNewsJob implements ShouldQueue
      */
     public function handle()
     {
-        $preferences = []; // Fetch preferences from database or config
-
-        $articles = $this->newsService->saveNews();
-
-        // Save articles to database
+        $this->articlesService->importArticles(); // Save articles to database
     }
 }
