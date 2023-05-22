@@ -3,7 +3,8 @@
 namespace App\Repositories;
 
 use App\Models\Article;
-use Illuminate\Database\Eloquent\Collection;
+use App\Models\Preference;
+use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 
 class ArticlesRepository
 {
@@ -24,23 +25,25 @@ class ArticlesRepository
      * @param array|null $preference
      * @return \Illuminate\Database\Eloquent\Collection
      */
-    public function getByPreference(?array $preference): Collection
+    public function getByPreference($preference, $perPage )
     {
         $query = Article::query();
 
         if ($preference) {
-            if ($preference['categories']) {
-                $query->whereIn('category', $preference['categories']);
-            }
-            if ($preference['authors']) {
-                $query->whereIn('author', $preference['authors']);
-            }
-            if ($preference['source']) {
-                $query->whereIn('source', $preference['sources']);
-            }
+            $query->where(function ($subQuery) use ($preference) {
+                if ($preference['categories']) {
+                    $subQuery->whereIn('category', $preference['categories']);
+                }
+                if ($preference['authors']) {
+                    $subQuery->orWhereIn('author', $preference['authors']);
+                }
+                if ($preference['sources']) {
+                    $subQuery->orWhereIn('source', $preference['sources']);
+                }
+            });
         }
 
-        return $query->get();
+        return $query->paginate($perPage);
     }
 
     /**
@@ -49,7 +52,7 @@ class ArticlesRepository
      * @param array $filter
      * @return \Illuminate\Database\Eloquent\Collection
      */
-    public function getArticlesWithFilter(array $filter): Collection
+    public function getArticlesWithFilter(array $filter, $perPage): LengthAwarePaginator
     {
         $query = Article::query();
 
@@ -58,7 +61,7 @@ class ArticlesRepository
         }
 
         if (isset($filter['date'])) {
-            $query->whereDate('published_at', $filter['date']);
+            $query->whereDate('published_at', '>', $filter['date']);
         }
 
         if (isset($filter['category'])) {
@@ -69,42 +72,8 @@ class ArticlesRepository
             $query->where('source', $filter['source']);
         }
 
-        return $query->get();
+        return $query->paginate($perPage);
     }
 
-    /**
-     * Get articles based on user preferences.
-     *
-     * @param array $preferences
-     * @return \Illuminate\Database\Eloquent\Collection
-     */
-    public function getUserPreferredArticles(array $preferences): Collection
-    {
-        $no_preferences = true;
-        $query = Article::query();
 
-        if (isset($preferences['categories'])) {
-            $no_preferences = empty($preferences['categories']) ?? false;
-            $categories = $preferences['categories']->pluck('name')->toArray();
-            $query->whereIn('category', $categories);
-        }
-
-        if (isset($preferences['authors'])) {
-            $no_preferences = empty($preferences['authors']) ?? false;
-            $authors = $preferences['authors']->pluck('name')->toArray();
-            $query->orWhereIn('author', $authors);
-        }
-
-        if (isset($preferences['sources'])) {
-            $no_preferences = empty($preferences['sources']) ?? false;
-            $sources = $preferences['sources']->pluck('name')->toArray();
-            $query->orWhereIn('source', $sources);
-        }
-
-        if ($no_preferences) {
-            return new Collection();
-        }
-
-        return $query->get();
-    }
 }

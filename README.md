@@ -9,7 +9,7 @@
 - **[Laravel](https://laravel.com/)**
 - **[Docker](https://docker.com/)**
 - **[Nginx](https://www.nginx.com/)**
-
+- **[Mysql](https://www.Mysql.com/)**
 
 ### Technologies used in Frontend
 - **[ReactJs](https://reactjs.org/)**

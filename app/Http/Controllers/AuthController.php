@@ -41,12 +41,12 @@ class AuthController extends Controller
         $user = User::where('email', $validatedData['email'])->first();
 
         if (!$user) {
-            return response()->json(['error' => 'The provided credentials are incorrect.'], 500);
+            return response()->json(['error' => 'The provided credentials are incorrect.'], 422);
         }
 
         try {
             if (!Hash::check($validatedData['password'], $user->password)) {
-                return response()->json(['error' => 'The provided credentials are incorrect.'], 500);
+                return response()->json(['error' => 'The provided credentials are incorrect.'], 422);
             }
             return response()->json(['status' => true ,'token' => $user->createToken($request->email)->plainTextToken], 200);
 

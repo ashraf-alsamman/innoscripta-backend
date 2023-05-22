@@ -7,6 +7,7 @@ use App\Repositories\ArticlesRepository;
 use App\Repositories\LogsRepository;
 use App\ArticlesProviders\ArticlesProvidersLoader;
 use App\Models\User;
+use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Database\Eloquent\Collection;
 
 class ArticlesService
@@ -33,9 +34,9 @@ class ArticlesService
      * @param array $filter
      * @return Collection
      */
-    public function getArticlesWithFilter(array $filter): Collection
+    public function getArticlesWithFilter(array $filter, $perPage )
     {
-        return $this->articlesRepository->getArticlesWithFilter($filter);
+        return $this->articlesRepository->getArticlesWithFilter($filter, $perPage );
     }
 
     /**
@@ -79,9 +80,9 @@ class ArticlesService
      * @param User $user
      * @return Collection
      */
-    public function getMyArticles(User $user): Collection
+    public function getMyArticles($userId , $perPage )
     {
-        $preference = $this->preferencesService->getPreferences($user);
-        return $this->articlesRepository->getUserPreferredArticles($preference);
+        $preference = $this->preferencesService->getUserPreference($userId);
+        return $this->articlesRepository->getByPreference($preference, $perPage );
     }
 }

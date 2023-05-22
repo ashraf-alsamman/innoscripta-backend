@@ -25,6 +25,11 @@ class User extends Authenticatable
         'email_verified_at' => 'datetime',
     ];
 
+    public function preference()
+    {
+        return $this->hasOne(Preference::class);
+    }
+    
     public function categories(): BelongsToMany
     {
         return $this->belongsToMany(Category::class, 'category_user', 'user_id', 'category_id');

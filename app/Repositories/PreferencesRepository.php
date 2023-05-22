@@ -1,27 +1,21 @@
 <?php
 
 namespace App\Repositories;
-
-use App\Models\User;
-use App\Models\Author;
-use App\Models\Source;
-use App\Models\Category;
+use App\Models\Preference;
+use App\Models\Article;
 use Illuminate\Database\Eloquent\Collection;
 
 class PreferencesRepository
 {
-    /**
-     * Get the user's preferences.
-     *
-     * @param User $user
-     * @return array
-     */
-    public function getUserPreferences(User $user): array
+    public function __construct(protected Preference $preference)
     {
-        $user->load('categories', 'authors', 'sources');
-        $categories = $user->categories;
-        $authors = $user->authors;
-        $sources = $user->sources;
+    }
+
+    public function getAllPreferences():array
+    {
+        $categories = Article::distinct('category')->pluck('category')->take(100);
+        $authors = Article::distinct('author')->pluck('author')->take(100);
+        $sources = Article::distinct('source')->pluck('source')->take(100);
 
         return [
             'categories' => $categories,
@@ -30,58 +24,22 @@ class PreferencesRepository
         ];
     }
 
-    /**
-     * Save user preferences.
-     *
-     * @param User $user
-     * @param array $preferences
-     * @return void
-     */
-    public function saveUserPreferences(User $user, array $preferences): void
+    public function getUserPreference($userId):Preference|null
     {
-        if (isset($preferences['categories'])) {
-            $categories = Category::whereIn('id', $preferences['categories'])->get();
-            $user->categories()->sync($categories);
-        }
-
-        if (isset($preferences['sources'])) {
-            $sources = Source::whereIn('id', $preferences['sources'])->get();
-            $user->sources()->sync($sources);
-        }
-
-        if (isset($preferences['authors'])) {
-            $authors = Author::whereIn('id', $preferences['authors'])->get();
-            $user->authors()->sync($authors);
-        }
+        return $this->preference->where('user_id',$userId)->first();
     }
 
-    /**
-     * Get all sources.
-     *
-     * @return Collection
-     */
-    public function getAllSources(): Collection
+    public function updateUserPreference($userId, $preferenceData):Preference
     {
-        return Source::all();
-    }
+        $preference = $this->getUserPreference($userId);
 
-    /**
-     * Get all categories.
-     *
-     * @return Collection
-     */
-    public function getAllCategories(): Collection
-    {
-        return Category::all();
-    }
+        if (!$preference) {
+            $preference = new Preference(['user_id' => $userId]);
+        }
 
-    /**
-     * Get all authors.
-     *
-     * @return Collection
-     */
-    public function getAllAuthors(): Collection
-    {
-        return Author::all();
+        $preference->fill($preferenceData);
+        $preference->save();
+
+        return $preference;
     }
 }

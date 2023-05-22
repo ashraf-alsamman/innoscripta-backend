@@ -27,11 +27,12 @@ class ArticlesControllers extends Controller
      *
      * @return JsonResponse
      */
-    public function getMyArticles(): JsonResponse
+    public function getMyArticles(Request $request): JsonResponse
     {
         try {
-            $user = Auth::user();
-            $articles = $this->articlesService->getMyArticles($user);
+            $userId = Auth::user()->id;
+            $perPage = (int) $request->input('perPage', 40);
+            $articles = $this->articlesService->getMyArticles($userId , $perPage );
             return response()->json(['data' => $articles, 'status' => true], 200);
         } catch (\Exception $e) {
             return response()->json([
@@ -51,8 +52,9 @@ class ArticlesControllers extends Controller
     public function getArticlesWithFilter(Request $request): JsonResponse
     {
         try {
+            $perPage = (int) $request->input('perPage', 40);
             $filter = $request->only(['keyword', 'date', 'category', 'source']);
-            $articles = $this->articlesService->getArticlesWithFilter($filter);
+            $articles = $this->articlesService->getArticlesWithFilter($filter,$perPage);
             return response()->json(['data' => $articles, 'status' => true], 200);
         } catch (\Exception $e) {
             return response()->json([
