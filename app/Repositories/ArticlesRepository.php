@@ -23,34 +23,47 @@ class ArticlesRepository
      * Get articles based on user preferences.
      *
      * @param array|null $preference
-     * @return \Illuminate\Database\Eloquent\Collection
+     * @return   Illuminate\Contracts\Pagination\LengthAwarePaginator;
      */
-    public function getByPreference($preference, $perPage )
+    public function hasPreferenceFilters($preference)
     {
-        $query = Article::query();
+        return $preference && (
+            (!empty($preference['categories']) && $preference['categories'] !== null) ||
+            (!empty($preference['authors']) && $preference['authors'] !== null) ||
+            (!empty($preference['sources']) && $preference['sources'] !== null)
+        );
+    }
 
-        if ($preference) {
+    public function getByPreference($preference, $perPage)
+    {
+        if (!$this->hasPreferenceFilters($preference)) {
+            return [];
+        }
+            $query = Article::query();
             $query->where(function ($subQuery) use ($preference) {
-                if ($preference['categories']) {
+                if (!empty($preference['categories'])) {
                     $subQuery->whereIn('category', $preference['categories']);
                 }
-                if ($preference['authors']) {
+                if (!empty($preference['authors'])) {
                     $subQuery->orWhereIn('author', $preference['authors']);
                 }
-                if ($preference['sources']) {
+                if (!empty($preference['sources'])) {
                     $subQuery->orWhereIn('source', $preference['sources']);
                 }
-            });
-        }
+               });
 
-        return $query->paginate($perPage);
+        $results = $query->paginate($perPage);
+        return $results;
     }
+
+
+
 
     /**
      * Get articles based on the provided filter.
      *
      * @param array $filter
-     * @return \Illuminate\Database\Eloquent\Collection
+     * @return  Illuminate\Contracts\Pagination\LengthAwarePaginator;
      */
     public function getArticlesWithFilter(array $filter, $perPage): LengthAwarePaginator
     {
@@ -74,6 +87,4 @@ class ArticlesRepository
 
         return $query->paginate($perPage);
     }
-
-
 }
