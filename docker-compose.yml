@@ -45,8 +45,6 @@ services:
       MYSQL_ROOT_PASSWORD: secret
       MYSQL_USER: root
       MYSQL_PASSWORD: secret
-      SERVICE_TAGS: dev
-      SERVICE_NAME: mysql_service
     volumes:
       - dbdata:/var/lib/mysql
     networks:
@@ -75,3 +73,4 @@ networks:
 volumes:
   dbdata:
     driver: local
+    external: false

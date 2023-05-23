@@ -23,12 +23,14 @@ WORKDIR /var/www
 # Copy Laravel project files
 COPY . /var/www
 
-# Copy environment file and generate key
-# COPY .env.example .env
-# RUN php artisan key:generate
+# Copy environment file
+COPY .env.example .env
 
-# Install dependencies
+# Install dependencies and generate autoload files
 RUN composer install --no-interaction --optimize-autoloader --no-dev --ignore-platform-reqs
+
+# Generate Laravel encryption key
+RUN php artisan key:generate
 
 # Setup the cron job for Laravel's schedule:run command
 RUN echo "* * * * * root /usr/local/bin/php /var/www/artisan schedule:run >> /var/log/cron.log 2>&1" > /etc/cron.d/laravel-scheduler
@@ -39,6 +41,8 @@ RUN chmod 0644 /etc/cron.d/laravel-scheduler
 # Create the log file to be able to run tail
 RUN touch /var/log/cron.log
 
+
+
 # Change ownership of the project directory
 RUN chown -R www-data:www-data /var/www
 
@@ -47,4 +51,3 @@ EXPOSE 9000
 
 # Run the command on container startup
 CMD cron && php-fpm
-

@@ -23,10 +23,8 @@ class Kernel extends ConsoleKernel
      */
     protected function schedule(Schedule $schedule): void
     {
-        // $schedule->command('news:fetch')->everyMinute()->runOnce();
-        // run mangament
+           $schedule->command('news:fetch')->everyThreeHours()->runOnce();
     }
-
     /**
      * Register the commands for the application.
      */

@@ -1,15 +1,16 @@
-## innoscripta (Coding Challenge)
+
+## innoscripta Task  (Coding Challenge)
 
 
 ## Screenshot:
-![Screenshot](screenshot.png "innoscripta")
+![Screenshot](screenshot.png "")
 
 ### Technologies used in Backend
 - **[PHP](https://php.net/)**
 - **[Laravel](https://laravel.com/)**
 - **[Docker](https://docker.com/)**
 - **[Nginx](https://www.nginx.com/)**
-- **[Mysql](https://www.Mysql.com/)**
+
 
 ### Technologies used in Frontend
 - **[ReactJs](https://reactjs.org/)**
@@ -19,20 +20,36 @@
 - **[redux-persist](https://www.npmjs.com/package/redux-persist)**
   
   
-  # How to run backend
-  clone 
-  https://github.com/ashraf-alsamman/innoscripta-backend
+# How to run backend
+clone 
+https://github.com/ashraf-alsamman/innoscripta-backend
 
 - run docker
-  `docker-compose build `
-  `docker-compose up`
+ `docker-compose build `
+ `docker-compose up`
+  
+# Run composer install and migrations and fetch new data
+
+`docker exec -it app bash`
+`php composer install`
+`php artisan migrate:fresh`
+`php artisan new:fetch`
 # How to run frontend
   clone 
   https://github.com/ashraf-alsamman/innoscripta-frontend
 
 - Run frontend (react js) project
-  `docker-compose build `
-  `docker-compose up`
+ `npm install`
+ `npm start`
   
-  - Run tests
-   `npm test`
+- Run frontend (react js) project with docker 
+ ` docker build -t my-react-app docker-compose up`
+
+
+
+
+ 
+
+ 
+
+ 
