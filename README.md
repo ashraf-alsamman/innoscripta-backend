@@ -5,6 +5,9 @@
 ## Screenshot:
 ![Screenshot](screenshot.png "")
 
+ ## Live demo
+- You can check the live demo from here   [https://celebrated-gecko-8b0a92.netlify.app/?page=1&perPage=10](https://celebrated-gecko-8b0a92.netlify.app/?page=1&perPage=10)
+
 ### Technologies used in Backend
 - **[PHP](https://php.net/)**
 - **[Laravel](https://laravel.com/)**
@@ -25,7 +28,7 @@ clone
 https://github.com/ashraf-alsamman/innoscripta-backend
 
 - run docker
- `docker-compose build `
+ `docker-compose build`
  `docker-compose up`
   
 # Run composer install and migrations and fetch new data
