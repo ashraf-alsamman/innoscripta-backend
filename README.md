@@ -34,7 +34,7 @@ https://github.com/ashraf-alsamman/innoscripta-backend
 # Run composer install and migrations and fetch new data
 
 `docker exec -it app bash`
-`php composer install`
+`composer install`
 `php artisan key:generate`
 `php artisan migrate:fresh`
 `php artisan new:fetch`
