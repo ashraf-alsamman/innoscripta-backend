@@ -41,9 +41,7 @@ RUN chmod 0644 /etc/cron.d/laravel-scheduler
 # Create the log file to be able to run tail
 RUN touch /var/log/cron.log
 
-
-
-# Change ownership of the project directory
+# Change ownership of the project directory to www-data user and group
 RUN chown -R www-data:www-data /var/www
 
 # Expose port 9000 for PHP-FPM
